@@ -6,5 +6,5 @@ class DefinitionError(RuntimeError):
     sys.tracebacklimit = 0
 
     def __init__(self, msg):
-        super(DefinitionError, self).__init__("%s" % msg)
+        super(DefinitionError, self).__init__(f"{msg}")
         self.msg = msg

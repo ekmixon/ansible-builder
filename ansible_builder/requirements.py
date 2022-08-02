@@ -38,7 +38,10 @@ def sanitize_requirements(collection_py_reqs):
                 consolidated.append(req)
                 seen_pkgs.add(req.name)
         except Exception as e:
-            logger.warning('Warning: failed to parse requirments from {}, error: {}'.format(collection, e))
+            logger.warning(
+                f'Warning: failed to parse requirments from {collection}, error: {e}'
+            )
+
 
     # removal of unwanted packages
     sanitized = []
@@ -55,6 +58,6 @@ def sanitize_requirements(collection_py_reqs):
         else:
             raise RuntimeError('Could not process {0}'.format(req.line))
 
-        sanitized.append(new_line + '  # from collection {}'.format(','.join(req.collections)))
+        sanitized.append(new_line + f"  # from collection {','.join(req.collections)}")
 
     return sanitized

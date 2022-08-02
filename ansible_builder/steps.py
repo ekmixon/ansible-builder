@@ -26,7 +26,6 @@ class AdditionalBuildSteps(Steps):
                 Error: Unknown type found for additional_build_steps; must be list or multi-line string.
                 """
             )
-            sys.exit(1)
         self.steps.extend(lines)
 
     def __iter__(self):

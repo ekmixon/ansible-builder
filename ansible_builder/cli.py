@@ -203,7 +203,4 @@ class BuildArgAction(argparse.Action):
         # None signifies that the build-arg will come from the environment.
         # This is currently only supported by Docker. Podman will treat any
         # usage of the $VALUE as a literal string.
-        if value:
-            attr[key] = value[0]
-        else:
-            attr[key] = None
+        attr[key] = value[0] if value else None

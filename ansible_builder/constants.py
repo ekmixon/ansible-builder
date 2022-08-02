@@ -20,7 +20,4 @@ build_arg_defaults = dict(
 
 user_content_subfolder = '_build'
 
-if shutil.which('podman'):
-    default_container_runtime = 'podman'
-else:
-    default_container_runtime = 'docker'
+default_container_runtime = 'podman' if shutil.which('podman') else 'docker'

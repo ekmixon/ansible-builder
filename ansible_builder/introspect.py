@@ -38,13 +38,7 @@ def pip_file_data(path):
 def bindep_file_data(path):
     sys_content = read_req_file(path)
 
-    sys_lines = []
-    for line in sys_content.split('\n'):
-        if line_is_empty(line):
-            continue
-        sys_lines.append(line)
-
-    return sys_lines
+    return [line for line in sys_content.split('\n') if not line_is_empty(line)]
 
 
 def process_collection(path):
@@ -56,16 +50,14 @@ def process_collection(path):
     """
     CD = CollectionDefinition(path)
 
-    py_file = CD.get_dependency('python')
-    pip_lines = []
-    if py_file:
+    if py_file := CD.get_dependency('python'):
         pip_lines = pip_file_data(os.path.join(path, py_file))
-
-    sys_file = CD.get_dependency('system')
-    bindep_lines = []
-    if sys_file:
+    else:
+        pip_lines = []
+    if sys_file := CD.get_dependency('system'):
         bindep_lines = bindep_file_data(os.path.join(path, sys_file))
-
+    else:
+        bindep_lines = []
     return (pip_lines, bindep_lines)
 
 
@@ -93,7 +85,7 @@ def process(data_dir=base_collections_path, user_pip=None, user_bindep=None):
         col_pip_lines, col_sys_lines = process_collection(path)
         CD = CollectionDefinition(path)
         namespace, name = CD.namespace_name()
-        key = '{}.{}'.format(namespace, name)
+        key = f'{namespace}.{name}'
 
         if col_pip_lines:
             py_req[key] = col_pip_lines
@@ -103,12 +95,10 @@ def process(data_dir=base_collections_path, user_pip=None, user_bindep=None):
 
     # add on entries from user files, if they are given
     if user_pip:
-        col_pip_lines = pip_file_data(user_pip)
-        if col_pip_lines:
+        if col_pip_lines := pip_file_data(user_pip):
             py_req['user'] = col_pip_lines
     if user_bindep:
-        col_sys_lines = bindep_file_data(user_bindep)
-        if col_sys_lines:
+        if col_sys_lines := bindep_file_data(user_bindep):
             sys_req['user'] = col_sys_lines
 
     return {
@@ -193,9 +183,9 @@ def simple_combine(reqs):
             base_line = line.split('#')[0].strip()
             if base_line in consolidated:
                 i = consolidated.index(base_line)
-                fancy_lines[i] += ', {}'.format(collection)
+                fancy_lines[i] += f', {collection}'
             else:
-                fancy_line = base_line + '  # from collection {}'.format(collection)
+                fancy_line = base_line + f'  # from collection {collection}'
                 consolidated.append(base_line)
                 fancy_lines.append(fancy_line)
 

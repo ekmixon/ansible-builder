@@ -210,7 +210,7 @@ class TestDefinitionErrors:
         if expect:
             assert expect in exc.value.args[0]
 
-    def test_file_not_found_error(good_exec_env_definition_path, tmpdir):
+    def test_file_not_found_error(self, tmpdir):
         path = "exec_env.txt"
 
         with pytest.raises(DefinitionError) as error:
